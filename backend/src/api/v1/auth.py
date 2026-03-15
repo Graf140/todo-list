@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from backend.src.services.auth_service import AuthService
 from backend.src.utils.validators import ValidationError
+from backend.src.api.dependencies import get_current_user
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -29,7 +30,7 @@ def register(request: dict):
         raise HTTPException(status_code=400, detail={e.field: e.message} if e.field else e.message)
 
 @router.post("/logout")
-def logout(current_user: dict):  # from dependency
+def logout(current_user: dict = Depends(get_current_user)):
     try:
         return AuthService.logout(current_user["user_id"])
     except ValidationError as e:

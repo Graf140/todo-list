@@ -20,6 +20,8 @@ def validate_password(password: str) -> str:
         raise ValidationError("Password is required", "password")
     if len(password) < 8:
         raise ValidationError("Password must be at least 8 characters", "password")
+    if len(password) > 72:
+        raise ValidationError("Password must not exceed 72 characters", "password")
     return password
 
 def validate_name(value: str, field_name: str) -> str:

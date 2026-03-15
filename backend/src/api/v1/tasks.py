@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from typing import Optional
 
 from backend.src.services.task_service import TaskService
 from backend.src.utils.validators import ValidationError
+from backend.src.api.dependencies import get_current_user
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
@@ -15,10 +16,9 @@ def get_tasks(
         executor_id: Optional[str] = None,
         page: int = Query(1, ge=1),
         limit: int = Query(20, ge=1, le=100),
-        current_user: dict = None  # from dependency
+        current_user: dict = Depends(get_current_user)
 ):
     try:
-        # resolve "me" to actual ID
         cid = int(customer_id) if customer_id and customer_id != "me" else (
             current_user["user_id"] if customer_id == "me" else None)
         eid = int(executor_id) if executor_id and executor_id != "me" else (
@@ -37,7 +37,10 @@ def get_tasks(
 
 
 @router.post("")
-def create_task(request: dict, current_user: dict = None):
+def create_task(
+        request: dict,
+        current_user: dict = Depends(get_current_user)
+):
     try:
         return TaskService.create_task(
             task_text=request.get("task_text"),
@@ -52,7 +55,10 @@ def create_task(request: dict, current_user: dict = None):
 
 
 @router.get("/{task_id}")
-def get_task(task_id: int, current_user: dict = None):
+def get_task(
+        task_id: int,
+        current_user: dict = Depends(get_current_user)
+):
     try:
         return TaskService.get_task(task_id, current_user)
     except ValidationError as e:
@@ -61,7 +67,11 @@ def get_task(task_id: int, current_user: dict = None):
 
 
 @router.put("/{task_id}")
-def update_task(task_id: int, request: dict, current_user: dict = None):
+def update_task(
+        task_id: int,
+        request: dict,
+        current_user: dict = Depends(get_current_user)
+):
     try:
         return TaskService.update_task(task_id, request, current_user)
     except ValidationError as e:
@@ -70,7 +80,10 @@ def update_task(task_id: int, request: dict, current_user: dict = None):
 
 
 @router.delete("/{task_id}")
-def delete_task(task_id: int, current_user: dict = None):
+def delete_task(
+        task_id: int,
+        current_user: dict = Depends(get_current_user)
+):
     try:
         return TaskService.delete_task(task_id, current_user)
     except ValidationError as e:

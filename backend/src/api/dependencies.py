@@ -11,8 +11,8 @@ async def get_current_user(
         credentials: HTTPAuthorizationCredentials = Depends(security)
 ) -> dict:
     token = credentials.credentials
-    payload = decode_token(token)
 
+    payload = decode_token(token)
     if not payload or payload.get("type") != "access":
         raise HTTPException(status_code=401, detail="Invalid token")
 

@@ -1,12 +1,17 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from backend.src.services.comment_service import CommentService
 from backend.src.utils.validators import ValidationError
+from backend.src.api.dependencies import get_current_user
 
 router = APIRouter(prefix="/tasks/{task_id}/comments", tags=["Comments"])
 
 @router.post("")
-def create_comment(task_id: int, request: dict, current_user: dict = None):
+def create_comment(
+    task_id: int,
+    request: dict,
+    current_user: dict = Depends(get_current_user)
+):
     try:
         return CommentService.create_comment(
             task_id=task_id,
@@ -18,7 +23,11 @@ def create_comment(task_id: int, request: dict, current_user: dict = None):
         raise HTTPException(status_code=status_code, detail={e.field: e.message} if e.field else e.message)
 
 @router.delete("/{comment_id}")
-def delete_comment(task_id: int, comment_id: int, current_user: dict = None):
+def delete_comment(
+    task_id: int,
+    comment_id: int,
+    current_user: dict = Depends(get_current_user)
+):
     try:
         return CommentService.delete_comment(comment_id, current_user)
     except ValidationError as e:
