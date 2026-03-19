@@ -33,11 +33,8 @@ class UserService:
         user = UserRepository.get_by_id(user_id)
         if not user:
             raise ValidationError("User not found")
-
-        # permissions
         if current_user["role"] != "admin" and current_user["user_id"] != user_id:
             raise ValidationError("Not enough permissions")
-
         validated = {}
 
         if "first_name" in update_data and update_data["first_name"] is not None:
@@ -49,7 +46,6 @@ class UserService:
         if "phone" in update_data:
             validated["phone"] = validate_phone(update_data["phone"])
 
-        # status can only be changed by admin
         if "status" in update_data and current_user["role"] == "admin":
             validated["status"] = update_data["status"]
 

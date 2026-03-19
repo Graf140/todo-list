@@ -23,7 +23,6 @@ async def get_current_user(
     user = UserRepository.get_by_id(int(user_id))
     if not user or user["status"] != "active":
         raise HTTPException(status_code=401, detail="User not found or blocked")
-
     return user
 
 

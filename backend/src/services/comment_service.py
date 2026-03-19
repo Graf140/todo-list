@@ -9,7 +9,6 @@ class CommentService:
     def create_comment(task_id: int, text: str, user_id: int) -> dict:
         task_id = validate_task_id(task_id)
 
-        # check task exists
         task = TaskRepository.get_by_id(task_id)
         if not task:
             raise ValidationError("Task not found")

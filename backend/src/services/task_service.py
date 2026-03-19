@@ -200,7 +200,7 @@ class TaskService:
                 raise ValidationError("Cannot update this field")
 
         if not validated:
-            return task  # nothing to update
+            return task
 
         return TaskRepository.update(task_id, **validated)
 
