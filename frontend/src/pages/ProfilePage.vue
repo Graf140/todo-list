@@ -251,29 +251,29 @@ const avatarUrl = computed(() => {
 
 // Заголовок в зависимости от роли
 const profileTitle = computed(() => {
-  if (authStore.isExecutor.value) return 'Мои задачи на выполнение'
-  if (authStore.isClient.value) return 'Мои задачи (заказанные)'
-  if (authStore.isAdmin.value) return 'Все задачи (администрирование)'
+  if (authStore.isExecutor) return 'Мои задачи на выполнение'
+  if (authStore.isClient) return 'Мои задачи (заказанные)'
+  if (authStore.isAdmin) return 'Все задачи (администрирование)'
   return 'Задачи'
 })
 
 // Сообщение когда задач нет
 const emptyMessage = computed(() => {
-  if (authStore.isExecutor.value) return 'Нет назначенных задач'
-  if (authStore.isClient.value) return 'У вас пока нет задач'
-  if (authStore.isAdmin.value) return 'Нет задач для отображения'
+  if (authStore.isExecutor) return 'Нет назначенных задач'
+  if (authStore.isClient) return 'У вас пока нет задач'
+  if (authStore.isAdmin) return 'Нет задач для отображения'
   return 'Задач нет'
 })
 
 // Задачи для отображения в зависимости от роли
 const displayedTasks = computed(() => {
-  if (authStore.isExecutor.value) {
+  if (authStore.isExecutor) {
     // Исполнитель видит задачи, которые назначены на него
     return tasksStore.tasks.filter(t => t.executor_id === authStore.user?.id)
-  } else if (authStore.isClient.value) {
+  } else if (authStore.isClient) {
     // Заказчик видит задачи, которые он создал
     return tasksStore.tasks.filter(t => t.client_id === authStore.user?.id)
-  } else if (authStore.isAdmin.value) {
+  } else if (authStore.isAdmin) {
     // Админ видит все задачи
     return tasksStore.tasks
   }
@@ -316,7 +316,7 @@ onMounted(async () => {
   editAvatar.value = authStore.user?.avatar || ''
 
   // Загружаем задачи в зависимости от роли
-  if (authStore.isAdmin.value || authStore.isExecutor.value) {
+  if (authStore.isAdmin || authStore.isExecutor) {
     await tasksStore.fetchAll()
   } else {
     await tasksStore.fetchMyTasks()

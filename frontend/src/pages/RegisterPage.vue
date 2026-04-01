@@ -119,7 +119,11 @@ const isLoading = ref(false)
 const error = ref<string | null>(null)
 
 const passwordMismatch = computed(() => {
-  return password.value && passwordConfirm.value && password.value !== passwordConfirm.value
+  return Boolean(
+    password.value &&
+    passwordConfirm.value &&
+    password.value !== passwordConfirm.value
+  )
 })
 
 async function handleSubmit() {

@@ -97,7 +97,7 @@
           </div>
 
           <!-- ДЕЙСТВИЯ АДМИНИСТРАТОРА -->
-          <div v-if="authStore.isAdmin.value" class="space-y-4">
+          <div v-if="authStore.isAdmin" class="space-y-4">
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <h3 class="text-lg font-medium text-blue-900 mb-3">
                 Управление задачей (Администратор)
@@ -151,7 +151,7 @@
           </div>
 
           <!-- ДЕЙСТВИЯ ИСПОЛНИТЕЛЯ -->
-          <div v-else-if="authStore.isExecutor.value" class="space-y-4">
+          <div v-else-if="authStore.isExecutor" class="space-y-4">
             <div v-if="task.executor_id === authStore.user?.id" class="bg-green-50 border border-green-200 rounded-lg p-4">
               <h3 class="text-lg font-medium text-green-900 mb-3">
                 ✓ Эта задача назначена вам
@@ -187,7 +187,7 @@
           </div>
 
           <!-- ДЕЙСТВИЯ КЛИЕНТА (ЗАКАЗЧИКА) -->
-          <div v-else-if="authStore.isClient.value" class="space-y-4">
+          <div v-else-if="authStore.isClient" class="space-y-4">
             <div v-if="task.client_id === authStore.user?.id" class="bg-purple-50 border border-purple-200 rounded-lg p-4">
               <h3 class="text-lg font-medium text-purple-900 mb-3">
                 Ваша задача
@@ -314,7 +314,7 @@ async function handleLogout() {
 
 onMounted(async () => {
   isLoading.value = true
-  if (authStore.isAdmin.value || authStore.isExecutor.value) {
+  if (authStore.isAdmin || authStore.isExecutor) {
     await tasksStore.fetchAll()
   } else {
     await tasksStore.fetchMyTasks()

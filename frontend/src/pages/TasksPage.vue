@@ -47,7 +47,7 @@
             {{ pageTitle }}
           </h1>
           <button
-            v-if="authStore.isClient.value"
+            v-if="authStore.isClient"
             @click="showCreateModal = true"
             class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
           >
@@ -134,7 +134,7 @@
 
     <!-- Модальное окно создания задачи (только для клиента) -->
     <div
-      v-if="showCreateModal && authStore.isClient.value"
+      v-if="showCreateModal && authStore.isClient"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
       @click="showCreateModal = false"
     >
@@ -218,15 +218,15 @@ const newTask = ref({ title: '', description: '' })
 
 // Заголовок страницы в зависимости от роли
 const pageTitle = computed(() => {
-  if (authStore.isAdmin.value) return 'Все задачи (управление)'
-  if (authStore.isExecutor.value) return 'Мои задачи на выполнение'
+  if (authStore.isAdmin) return 'Все задачи (управление)'
+  if (authStore.isExecutor) return 'Мои задачи на выполнение'
   return 'Мои задачи'
 })
 
 // Сообщение когда задач нет
 const emptyMessage = computed(() => {
-  if (authStore.isAdmin.value) return 'Нет задач для отображения'
-  if (authStore.isExecutor.value) return 'Нет назначенных задач'
+  if (authStore.isAdmin) return 'Нет задач для отображения'
+  if (authStore.isExecutor) return 'Нет назначенных задач'
   return 'У вас пока нет задач'
 })
 
@@ -235,10 +235,10 @@ const filteredTasks = computed(() => {
   let tasks = tasksStore.tasks
 
   // Фильтр по роли
-  if (authStore.isExecutor.value) {
+  if (authStore.isExecutor) {
     // Исполнитель видит только назначенные на него задачи
     tasks = tasks.filter(t => t.executor_id === authStore.user?.id)
-  } else if (authStore.isClient.value) {
+  } else if (authStore.isClient) {
     // Клиент видит только свои задачи
     tasks = tasks.filter(t => t.client_id === authStore.user?.id)
   }
@@ -276,7 +276,7 @@ async function handleLogout() {
 }
 
 onMounted(async () => {
-  if (authStore.isAdmin.value || authStore.isExecutor.value) {
+  if (authStore.isAdmin || authStore.isExecutor) {
     await tasksStore.fetchAll()
   } else {
     await tasksStore.fetchMyTasks()
